@@ -14,17 +14,24 @@ import javafx.scene.text.Text;
 
 public class MenuClass {
 
-	private final BorderPane rootPane ;
+	private final BorderPane rootPane;
+	private final TextAreas textClass;
+	private int currentId;
 
 	public MenuClass() {
 		
 		rootPane = new BorderPane();
 		HBox hbox = this.addHBox();
 		VBox vbox = this.addVBox();
+		this.textClass = new TextAreas();
+		
+		VBox textList = this.textClass.rootNode();
+		this.textClass.updateText("SELECT * FROM `pets`.`cats` where `id` = 1;");
 		VBox vboxButtons = this.addVBoxButtons();
 		rootPane.setLeft(vbox);
 		rootPane.setTop(hbox);
 		rootPane.setRight(vboxButtons);
+		rootPane.setCenter(textList);
 		
 	}
 	
@@ -35,9 +42,15 @@ public class MenuClass {
 	    
 	    Button newButton = new Button("Uusi");
 	    newButton.setPrefSize(100, 20);
+	    newButton.setOnAction((e) -> {
+	    	this.textClass.changeNewInput();
+	    });
 	    
 	    Button saveButton = new Button("Tallenna");
 	    saveButton.setPrefSize(100, 20);
+	    saveButton.setOnAction((e) -> {
+	    	this.textClass.saveInputs();
+	    });
 	    
 	    vbox.getChildren().addAll(newButton, saveButton);
 		return vbox;
@@ -47,6 +60,10 @@ public class MenuClass {
         return rootPane ;
     }
 	
+	public void updateTextField(String action) {
+		this.textClass.updateText(action);
+	}
+	
 	public HBox addHBox() {
 	    HBox hbox = new HBox();
 	    hbox.setPadding(new Insets(15, 12, 15, 12));
@@ -55,15 +72,28 @@ public class MenuClass {
 
 	    Button buttonFirst = new Button("<<");
 	    buttonFirst.setPrefSize(50, 20);
+	    buttonFirst.setOnAction((e) -> {
+	    	this.updateTextField("First");
+	    });
 
 	    Button buttonBackOne = new Button("<");
 	    buttonBackOne.setPrefSize(50, 20);
+	    buttonBackOne.setOnAction((e) -> {
+	    	this.updateTextField("Prev");
+	    });
 	    
 	    Button buttonForwardOne = new Button(">");
 	    buttonForwardOne.setPrefSize(50, 20);
+	    buttonForwardOne.setOnAction((e) -> {
+	    	this.updateTextField("Next");
+	    });
 	    
 	    Button ButtonLast = new Button(">>");
 	    ButtonLast.setPrefSize(50, 20);
+	    ButtonLast.setOnAction((e) -> {
+	    	this.updateTextField("Last");
+	    });
+	    
 	    hbox.getChildren().addAll(buttonFirst, buttonBackOne, buttonForwardOne, ButtonLast);
 
 	    return hbox;
@@ -72,7 +102,7 @@ public class MenuClass {
 	public VBox addVBox() {
 	    VBox vbox = new VBox();
 	    vbox.setPadding(new Insets(10));
-	    vbox.setSpacing(8);
+	    vbox.setSpacing(14);
 
 	    Text id = new Text("ID");
 	    id.setFont(Font.font("Arial", FontWeight.BOLD, 14));
@@ -93,5 +123,11 @@ public class MenuClass {
 
 	    return vbox;
 	}
+	
+	public void closeConnetion() {
+		this.textClass.closeConnection();
+	}
+	
+	
 
 }

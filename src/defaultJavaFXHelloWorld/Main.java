@@ -1,6 +1,7 @@
 package defaultJavaFXHelloWorld;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.application.Application;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
@@ -24,17 +26,17 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
+	private MenuClass mClass;
   @Override 
   public void start(Stage primaryStage) {
     try{
-    	SqlHandler sqlHandler = new SqlHandler();
-    	sqlHandler.connectDB();
+    	
         String otsikko=" Kissa tietokanta";
         primaryStage.setTitle(otsikko);
         Scene scene = new Scene(new VBox(this.addMenu()));
-        MenuClass mClass = new MenuClass();
+        this.mClass = new MenuClass();
         
-        ((VBox) scene.getRoot()).getChildren().addAll(mClass.getRootPane());
+        ((VBox) scene.getRoot()).getChildren().addAll(this.mClass.getRootPane());
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -44,11 +46,19 @@ public class Main extends Application {
   }
   
 	 public MenuBar addMenu() {
-			Menu menu1 = new Menu("Menu 1");
+			Menu menu1 = new Menu("File");
 
 			MenuBar menuBar = new MenuBar();
 
 			menuBar.getMenus().add(menu1);
+			
+			MenuItem quit = new MenuItem("Sulje ohjelma");
+			quit.setOnAction((e) -> {
+				this.mClass.closeConnetion();
+				Platform.exit();
+		    });        
+
+			menu1.getItems().addAll(quit);
 			return menuBar;
 	 }
 		
